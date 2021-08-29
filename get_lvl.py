@@ -1,3 +1,5 @@
+from math import round
+
 def get_skill_lvl(exp, cap=60):
     
     skills = {
@@ -64,15 +66,16 @@ def get_skill_lvl(exp, cap=60):
     }
 
     for i in skills.keys():
+        level = skills[i]
         if exp >= i : 
-            if exp >= 111672425 and cap == 60:
-                return 60
-            elif exp >= 55172425 and cap == 50:
-                return 50
+            if level == cap:
+                return {"level": level, "overflow" : exp - i}
             else:
-                pass
+                previous = i
         else:
-            return skills[i]-1
+            level = round(level - 1 + (exp-previous) / (i-previous), 2)
+            return {"level": level, "overflow" : 0}
+
 
 def get_slayer_lvl(exp):
 
@@ -96,6 +99,7 @@ def get_slayer_lvl(exp):
                 pass
         else:
             return slayers[i]-1 
+
 
 def get_dungeon_lvl(exp):
 
@@ -152,22 +156,15 @@ def get_dungeon_lvl(exp):
         569809640 :	50,
     }
 
+    previous = 0
+
     for i in dungeons.keys():
+        level = dungeons[i]
         if exp >= i : 
             if exp >= 569809640:
-                return 50
+                return {"level" : 50, "overflow" : exp - 569809640}
             else:
-                pass
+                previous = i
         else:
-            return dungeons[i]-1 
-
-if __name__ == "__main__":
-
-    dungeon_lvl = get_dungeon_lvl(569809640)
-    print(dungeon_lvl)
-
-    slayer_lvl = get_slayer_lvl(1000000)
-    print(slayer_lvl)
-
-    skill_lvl = get_skill_lvl(111672425)
-    print(skill_lvl)
+            level = level - 1 + (exp-previous) / (i-previous)
+            return {"level" : level, "overflow" : 0}
